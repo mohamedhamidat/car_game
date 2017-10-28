@@ -1,54 +1,47 @@
-"""
-Hi every one 
-This is a simple car game developed using pygame
+#!/usr/bin/env python
 
 """
-__AUTHOR__ = "Mohamed Hamidat, C# and python Developer hamidatmohamed@yahoo.fr"
+Hi every one 
+This is a simple car game developed using pygame witn python 3
+
+"""
+__author__  = "Mohamed Hamidat, C# and python Developer hamidatmohamed@yahoo.fr"
 
 import pygame
 import time
 import random 
 
-pygame.init()
-
-crash_sound = pygame.mixer.Sound("crash.wav")
 
 
+#display dimension
 display_width = 800
 display_height = 600
 
+#car dimension
 car_width = 70
 car_height = 140
 
-
+#colors 
 black = (0,0,0)
 white = (255,255,255)
 blue =(53, 115, 255)
-
-
 red = (200,0,0)
 green = (0, 200, 0)
 bright_red = (255,0,0)
 bright_green = (0,255,0)
 
-gameDisplay = pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption('Fast_and-Curious/hamidat')
-clock = pygame.time.Clock()
-
-
-carImg = pygame.image.load('racecar2.png')
-gameIcon = pygame.image.load('carIcon.png')
-pygame.display.set_icon(gameIcon)
-
-backgroundImg = pygame.image.load ('way.png')
-carThingImg = pygame.image.load('carcar.png')
-treeThingImg = pygame.image.load('trees.jpg')
-
-carCrash = pygame.image.load('carcrash.png')
-
-
 pause = False
 
+#game setup 
+def game_init():
+    pygame.init()
+    gameDisplay = pygame.display.set_mode((display_width, display_height))
+    pygame.display.set_caption('Fast_and_Curious/Mohamed')
+    clock = pygame.time.Clock()
+    #game_icon = pygame.image.load('carIcon.png')
+    #pygame.display.set_icon(game_icon)
+
+#backgroundImg = pygame.image.load ('way.png')
 
 ##############---------FONCTIONS--------------##################
 
@@ -76,15 +69,9 @@ def line(lineX, lineY, lineW, lineH, color):
     pygame.draw.rect(gameDisplay, color, [lineX,lineY, lineW,lineH])
 
 
-def car(x, y):
-    gameDisplay.blit(carImg, (x, y))
-
-
-def car_thing(x, y):
-    gameDisplay.blit(carThingImg, (x, y))
-
-def tree_thing(x, y):
-    gameDisplay.blit(treeThingImg, (x, y))
+def load_image(x , y, image_name):
+    img = pygame.image.load(image_name)
+    gameDisplay.blit(img, (x, y))
 
 def text_object(text, font):
     textSurface = font.render(text, True, black)
@@ -105,10 +92,11 @@ def message_display(text):
 
 
 def crash(x, y):
-    gameDisplay.blit(carCrash, ((x - 45), (y - 30)))
+    car_crash = pygame.image.load('carcrash.png')
+    gameDisplay.blit(car_crash, ((x - 45), (y - 30)))
+    crash_sound = pygame.mixer.Sound("crash.wav")
     pygame.mixer.Sound.play(crash_sound)
     pygame.mixer.music.stop()
-    #gameDisplay.fill(white)
     largeText = pygame.font.SysFont("comicsansms",90)
     textSurf, textRect = text_object("You Crashed!", largeText)
     textRect.center = ((display_width/2) , (display_height/4))
@@ -141,11 +129,6 @@ def button(msg, x, y, w, h, ic, ac, action=None):
         pygame.draw.rect(gameDisplay, ac,(x, y,w,h))
         if click[0] == 1 and action != None:
             action()
-            # if action == "play":
-            #     game_loop ()
-            # elif action == "quit":
-            #     pygame.quit()
-            #     quit()
 
     else:
         pygame.draw.rect(gameDisplay, ic,(x, y,w,h))
@@ -201,7 +184,6 @@ def game_intro():
                 pygame.quit()
                 quit()
         gameDisplay.fill(white)         
-        # gameDisplay.blit(backgroundImg,(100,0))
     
         largeText = pygame.font.SysFont("comicsansms",80)
         textSurf, textRect = text_object("Let's Ride !", largeText)
@@ -269,39 +251,23 @@ def game_loop():
                 if event.key == pygame.K_p:
                     pause = True
                     game_pause()
-
-
-                
-                # elif event.key == pygame.K_UP:
-                #     speed_change = 0.01
-                #     # y_change = -5
-                # elif event.key == pygame.K_DOWN:
-                #     # y_change = 5
-                #     if thing_speed > 4 : 
-                #         speed_change = -0.01
                     
             if event.type == pygame.KEYUP:
-                #if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT: 
                 x_change= 0
-                # y_change= 0
-                # speed_change = 0
 
 
         x += x_change
-        # y += y_change
-        # thing_speed += speed_change
 
         gameDisplay.fill(white)         
-        # gameDisplay.blit(backgroundImg,(100,0))
         
         line(150, 0, 20, display_height, blue)
         line(display_width-150, 0, 20, display_height, blue)
 
         #things (thing_startx, thing_starty, thing_width, thing_height, red)
         line(lineX, lineY, lineW, lineH, blue)
-        car_thing(thing_startx, thing_starty)
-        tree_thing (80, tree_y_left)
-        tree_thing (700, tree_y_right)
+        load_image(thing_startx, thing_starty, 'carcar.png')
+        load_image(80, tree_y_left, 'trees.jpg')
+        load_image(700, tree_y_right, 'trees.jpg')
         
         # line(lineX, lineY+150, lineW, lineH)
 
@@ -309,7 +275,7 @@ def game_loop():
         lineY += line_speed
         tree_y_left += tree_speed
         tree_y_right += tree_speed
-        car(x,y)
+        load_image(x,y, 'racecar2.png')
         thing_dodged(dodged, 5, 5)
         thing_speeds(thing_speed, 5, 50)
 
@@ -323,18 +289,10 @@ def game_loop():
 
 
         if thing_starty > display_height :
-            #thing_width = random.randrange(100, 300)  
-
             thing_starty = 0 - thing_height # reset y 
             thing_startx = random.randrange(170, display_width-thing_width-150)
             dodged += 1 
-            # dodged += (1 +1 *(thing_speed*0.1))
-            ###CHALLANGE####
-
-            thing_speed += 1/20 # accelarate
-            #thing_width += (dodged * 1.2)
-            #thing_height = random.randrange(100, 300)
-        
+            thing_speed += 1/20 # accelarate       
 
         if lineY > display_height  :
             #thing_width = random.randrange(100, 300)  
@@ -363,14 +321,18 @@ def game_loop():
                 #print ("x crossover")
                 crash(x, y)
 
-
-        
-
-
         pygame.display.update()
         clock.tick(60)
 
-game_intro()
-game_loop()
-pygame.quit()
-quit()
+def main():
+    game_init()
+    game_intro()
+    game_loop()
+    pygame.quit()
+    quit() 
+
+if __name__ == '__main__':
+    #main()
+    pass
+
+
