@@ -46,28 +46,21 @@ def game_init():
 
 ##############---------FONCTIONS--------------##################
 
-def thing_dodged(count, x,y, message = 'Dodged: '):
+def display(count, x, y, message_format = 'Dodged: %d'):
     """display the score"""
    # max_dodged = 10 
     font = pygame.font.SysFont("comicsansms", 20)
-    text = font.render (message+ str(count), True, black)
-    game_display.blit(text, (x,y ))
-
-def thing_speeds(count, x,y):
-    """display the score"""
-    font = pygame.font.SysFont("comicsansms", 20)
-    text = font.render ("Spd: %d px/s"%(count*60), True, red)
-    game_display.blit(text, (x,y ))
-
+    text = font.render(message_format%count, True, black)
+    game_display.blit(text, (x, y))
 
 def things(thingX, thingY, thingW, thingH, color):
-    """draw random rectangles""" 
+    """draw random things (car or anything)""" 
     pygame.draw.rect(game_display, color, [thingX, thingY, thingW, thingH])
 
 
 def line(lineX, lineY, lineW, lineH, color):
     """draw way lines """ 
-    pygame.draw.rect(game_display, color, [lineX,lineY, lineW,lineH])
+    pygame.draw.rect(game_display, color, [lineX, lineY, lineW, lineH])
 
 
 def load_image(x , y, image_name):
@@ -198,26 +191,24 @@ def game_intro():
         pygame.display.update()
         clock.tick(15)
 
-
-
 def game_loop():
     global pause
+    global score_game
 
     pygame.mixer.music.load('music/coffee_stains.wav')
     pygame.mixer.music.play(-1)
 
-
     x = (display_width * 0.45)
     y = (display_height * 0.75)
 
-    x_change=0
-    y_change=0
-    speed_change=0
+    x_change = 0
+    y_change = 0
+    speed_change = 0
 
     thing_width = 70
     thing_height = 140
 
-    thing_startx = random.randrange(100, display_width-200)
+    thing_startx = random.randrange(100, display_width - 200)
     thing_starty = -600
     thing_speed = 4 
 
@@ -234,7 +225,7 @@ def game_loop():
 
     dodged = 0 
 
-    gameExit= False
+    gameExit = False
 
     while not gameExit:
         for event in pygame.event.get():
@@ -255,8 +246,6 @@ def game_loop():
                     
             if event.type == pygame.KEYUP:
                 x_change= 0
-
-
         x += x_change
 
         game_display.fill(white)         
@@ -264,33 +253,24 @@ def game_loop():
         line(150, 0, 20, display_height, blue)
         line(display_width-150, 0, 20, display_height, blue)
 
-        #things (thing_startx, thing_starty, thing_width, thing_height, red)
-        line(lineX, lineY, lineW, lineH, blue)
         load_image(thing_startx, thing_starty, 'images/car.png')
         load_image(80, tree_y_left, 'images/trees.jpg')
         load_image(700, tree_y_right, 'images/trees.jpg')
-        
-        # line(lineX, lineY+150, lineW, lineH)
+        load_image(x,y, 'images/car1.png')
 
         thing_starty += thing_speed
         lineY += line_speed
         tree_y_left += tree_speed
         tree_y_right += tree_speed
-        load_image(x,y, 'images/car1.png')
-        thing_dodged(dodged, 5, 25)
-        thing_speeds(thing_speed, 5, 50)
 
-        global score_game
-        thing_dodged(score_game, 5, 5, "Final Score: ")
-
+        display(dodged, 5, 25)
+        display(thing_speed*60 , 5, 50, "Spd: %d px/s")    
+        display(score_game, 5, 5, "Final Score: %d")
 
         if x > display_width - car_width - 150 or x < 150 :
             # 100 way background image
             crash(x,y)
         
-
-
-
         if thing_starty > display_height :
             thing_starty = 0 - thing_height # reset y 
             thing_startx = random.randrange(170, display_width-thing_width-150)
@@ -299,30 +279,21 @@ def game_loop():
             thing_speed += 1/20 # accelarate       
 
         if lineY > display_height  :
-            #thing_width = random.randrange(100, 300)  
-
             lineY = 0 - lineH # reset y 
             thing_speed += 1/15
 
         if tree_y_left > display_height  :
-        #thing_width = random.randrange(100, 300)  
-
             tree_y_left = 0 - tree_h # reset y 
             thing_speed += 1/15
 
         if tree_y_right > display_height  :
-        #thing_width = random.randrange(100, 300)  
-
             tree_y_right = 0 - tree_h # reset y 
             thing_speed += 1/15
 
-        ### crash with rec 
+        ### check crash  
         if y < (thing_starty + thing_height) and y+ car_height >= thing_starty + thing_height:
-        
-            #print ("y crossover")
             if x > thing_startx and x < (thing_startx + thing_width) or x + car_width > thing_startx \
             and x + car_width < thing_startx + thing_width :
-                #print ("x crossover")
                 crash(x, y)
 
         pygame.display.update()
@@ -337,6 +308,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-    #pass
 
 
