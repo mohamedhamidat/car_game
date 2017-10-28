@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Hi every one 
+Hi everyone 
 This is a simple car game developed using pygame witn python 3
 
 """
