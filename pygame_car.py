@@ -1,3 +1,10 @@
+"""
+Hi every one 
+This is a simple car game developed using pygame
+
+"""
+__AUTHOR__ = "Mohamed Hamidat, C# and python Developer hamidatmohamed@yahoo.fr"
+
 import pygame
 import time
 import random 
