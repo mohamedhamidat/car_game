@@ -37,12 +37,10 @@ clock = pygame.time.Clock()
 #game setup 
 def game_init():
     pygame.init()
-    pygame.display.set_caption('Fast_and_Curious/Mohamed')
-    
+    pygame.display.set_caption('Fast_and_Curious/Mohamed')  
     #game_icon = pygame.image.load('carIcon.png')
     #pygame.display.set_icon(game_icon)
 
-#backgroundImg = pygame.image.load ('way.png')
 
 ##############---------FONCTIONS--------------##################
 
@@ -84,7 +82,6 @@ def message_display(text):
 
     game_loop()
 
-
 def crash(x, y):
     car_crash = pygame.image.load('images/carcrash.png')
     game_display.blit(car_crash, ((x - 45), (y - 30)))
@@ -102,22 +99,17 @@ def crash(x, y):
                 pygame.quit()
                 quit()
 
-        
-
         button("Play Again", 150,250,100,50, green, bright_green, game_loop)
         button("Quit", 550,250,100,50, red, bright_red, quitgame)
 
-
         pygame.display.update()
         clock.tick(15)
-
 
 def button(msg, x, y, w, h, ic, ac, action=None): 
     """message, dimension, active/inactive color"""
 
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    #print(mouse)
 
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(game_display, ac,(x, y,w,h))
@@ -131,7 +123,6 @@ def button(msg, x, y, w, h, ic, ac, action=None):
     textSurf, textRect = text_object(msg, smallText)
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     game_display.blit(textSurf, textRect)
-
 
 def quitgame():
     pygame.quit()
@@ -160,10 +151,8 @@ def game_pause():
         button("Continue !", 150,250,100,50, green, bright_green, game_unpause)
         button("Quit", 550,250,100,50, red, bright_red, quitgame)
 
-
         pygame.display.update()
         clock.tick(15)
-
 
 def game_intro():
 
@@ -234,12 +223,10 @@ def game_loop():
                 quit()
 
             if event.type== pygame.KEYDOWN:
-
                 if event.key==pygame.K_LEFT:
                     x_change=-5
                 if event.key == pygame.K_RIGHT:
                     x_change=5
-
                 if event.key == pygame.K_p:
                     pause = True
                     game_pause()
@@ -267,10 +254,11 @@ def game_loop():
         display(thing_speed*60 , 5, 50, "Spd: %d px/s")    
         display(score_game, 5, 5, "Final Score: %d")
 
+        #crash if car touches another car
         if x > display_width - car_width - 150 or x < 150 :
-            # 100 way background image
             crash(x,y)
         
+        #update score and speed when car exceeds another car
         if thing_starty > display_height :
             thing_starty = 0 - thing_height # reset y 
             thing_startx = random.randrange(170, display_width-thing_width-150)
