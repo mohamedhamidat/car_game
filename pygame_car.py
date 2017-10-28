@@ -29,15 +29,16 @@ red = (200,0,0)
 green = (0, 200, 0)
 bright_red = (255,0,0)
 bright_green = (0,255,0)
-
 pause = False
+score_game = 0
 
+game_display = pygame.display.set_mode((display_width, display_height))
+clock = pygame.time.Clock()
 #game setup 
 def game_init():
     pygame.init()
-    gameDisplay = pygame.display.set_mode((display_width, display_height))
     pygame.display.set_caption('Fast_and_Curious/Mohamed')
-    clock = pygame.time.Clock()
+    
     #game_icon = pygame.image.load('carIcon.png')
     #pygame.display.set_icon(game_icon)
 
@@ -45,33 +46,33 @@ def game_init():
 
 ##############---------FONCTIONS--------------##################
 
-def thing_dodged(count, x,y):
+def thing_dodged(count, x,y, message = 'Dodged: '):
     """display the score"""
    # max_dodged = 10 
     font = pygame.font.SysFont("comicsansms", 20)
-    text = font.render ("Dodged: "+ str(count), True, black)
-    gameDisplay.blit(text, (x,y ))
+    text = font.render (message+ str(count), True, black)
+    game_display.blit(text, (x,y ))
 
 def thing_speeds(count, x,y):
     """display the score"""
-   # max_dodged = 10 
     font = pygame.font.SysFont("comicsansms", 20)
     text = font.render ("Spd: %d px/s"%(count*60), True, red)
-    gameDisplay.blit(text, (x,y ))
+    game_display.blit(text, (x,y ))
+
 
 def things(thingX, thingY, thingW, thingH, color):
     """draw random rectangles""" 
-    pygame.draw.rect(gameDisplay, color, [thingX, thingY, thingW, thingH])
+    pygame.draw.rect(game_display, color, [thingX, thingY, thingW, thingH])
 
 
 def line(lineX, lineY, lineW, lineH, color):
     """draw way lines """ 
-    pygame.draw.rect(gameDisplay, color, [lineX,lineY, lineW,lineH])
+    pygame.draw.rect(game_display, color, [lineX,lineY, lineW,lineH])
 
 
 def load_image(x , y, image_name):
     img = pygame.image.load(image_name)
-    gameDisplay.blit(img, (x, y))
+    game_display.blit(img, (x, y))
 
 def text_object(text, font):
     textSurface = font.render(text, True, black)
@@ -82,7 +83,7 @@ def message_display(text):
     largeText = pygame.font.SysFont("comicsansms",115)
     textSurf, textRect = text_object(text, largeText)
     textRect.center = ((display_width/2) , (display_height/2))
-    gameDisplay.blit(textSurf, textRect)
+    game_display.blit(textSurf, textRect)
 
     pygame.display.update()
 
@@ -92,15 +93,15 @@ def message_display(text):
 
 
 def crash(x, y):
-    car_crash = pygame.image.load('carcrash.png')
-    gameDisplay.blit(car_crash, ((x - 45), (y - 30)))
-    crash_sound = pygame.mixer.Sound("crash.wav")
+    car_crash = pygame.image.load('images/carcrash.png')
+    game_display.blit(car_crash, ((x - 45), (y - 30)))
+    crash_sound = pygame.mixer.Sound("music/crash.wav")
     pygame.mixer.Sound.play(crash_sound)
     pygame.mixer.music.stop()
     largeText = pygame.font.SysFont("comicsansms",90)
     textSurf, textRect = text_object("You Crashed!", largeText)
     textRect.center = ((display_width/2) , (display_height/4))
-    gameDisplay.blit(textSurf, textRect)
+    game_display.blit(textSurf, textRect)
 
     while True:
         for event in pygame.event.get():
@@ -126,17 +127,17 @@ def button(msg, x, y, w, h, ic, ac, action=None):
     #print(mouse)
 
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
-        pygame.draw.rect(gameDisplay, ac,(x, y,w,h))
+        pygame.draw.rect(game_display, ac,(x, y,w,h))
         if click[0] == 1 and action != None:
             action()
 
     else:
-        pygame.draw.rect(gameDisplay, ic,(x, y,w,h))
+        pygame.draw.rect(game_display, ic,(x, y,w,h))
 
     smallText = pygame.font.SysFont("comicsansms",20)
     textSurf, textRect = text_object(msg, smallText)
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
-    gameDisplay.blit(textSurf, textRect)
+    game_display.blit(textSurf, textRect)
 
 
 def quitgame():
@@ -161,7 +162,7 @@ def game_pause():
         largeText = pygame.font.SysFont("comicsansms",90)
         textSurf, textRect = text_object("Pause!", largeText)
         textRect.center = ((display_width/2) , (display_height/4))
-        gameDisplay.blit(textSurf, textRect)
+        game_display.blit(textSurf, textRect)
 
         button("Continue !", 150,250,100,50, green, bright_green, game_unpause)
         button("Quit", 550,250,100,50, red, bright_red, quitgame)
@@ -173,7 +174,7 @@ def game_pause():
 
 def game_intro():
 
-    pygame.mixer.music.load("atlanta.wav")
+    pygame.mixer.music.load("music/atlanta.wav")
     pygame.mixer.music.play(-1)
 
     intro = True 
@@ -183,12 +184,12 @@ def game_intro():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        gameDisplay.fill(white)         
+        game_display.fill(white)         
     
         largeText = pygame.font.SysFont("comicsansms",80)
         textSurf, textRect = text_object("Let's Ride !", largeText)
         textRect.center = ((display_width/2) , (display_height/2))
-        gameDisplay.blit(textSurf, textRect)
+        game_display.blit(textSurf, textRect)
 
         button("GO !", 150,450,100,50, green, bright_green, game_loop)
         button("Quit", 550,450,100,50, red, bright_red, quitgame)
@@ -202,7 +203,7 @@ def game_intro():
 def game_loop():
     global pause
 
-    pygame.mixer.music.load('coffee_stains.wav')
+    pygame.mixer.music.load('music/coffee_stains.wav')
     pygame.mixer.music.play(-1)
 
 
@@ -258,16 +259,16 @@ def game_loop():
 
         x += x_change
 
-        gameDisplay.fill(white)         
+        game_display.fill(white)         
         
         line(150, 0, 20, display_height, blue)
         line(display_width-150, 0, 20, display_height, blue)
 
         #things (thing_startx, thing_starty, thing_width, thing_height, red)
         line(lineX, lineY, lineW, lineH, blue)
-        load_image(thing_startx, thing_starty, 'carcar.png')
-        load_image(80, tree_y_left, 'trees.jpg')
-        load_image(700, tree_y_right, 'trees.jpg')
+        load_image(thing_startx, thing_starty, 'images/car.png')
+        load_image(80, tree_y_left, 'images/trees.jpg')
+        load_image(700, tree_y_right, 'images/trees.jpg')
         
         # line(lineX, lineY+150, lineW, lineH)
 
@@ -275,10 +276,12 @@ def game_loop():
         lineY += line_speed
         tree_y_left += tree_speed
         tree_y_right += tree_speed
-        load_image(x,y, 'racecar2.png')
-        thing_dodged(dodged, 5, 5)
+        load_image(x,y, 'images/car1.png')
+        thing_dodged(dodged, 5, 25)
         thing_speeds(thing_speed, 5, 50)
 
+        global score_game
+        thing_dodged(score_game, 5, 5, "Final Score: ")
 
 
         if x > display_width - car_width - 150 or x < 150 :
@@ -292,6 +295,7 @@ def game_loop():
             thing_starty = 0 - thing_height # reset y 
             thing_startx = random.randrange(170, display_width-thing_width-150)
             dodged += 1 
+            score_game += 1
             thing_speed += 1/20 # accelarate       
 
         if lineY > display_height  :
@@ -332,7 +336,7 @@ def main():
     quit() 
 
 if __name__ == '__main__':
-    #main()
-    pass
+    main()
+    #pass
 
 
